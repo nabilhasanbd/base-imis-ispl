@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Sludge Collection Trends by Treatment Plants Over the Last 5 Years",
+    'card_title' => __("Sludge Collection Trends by Treatment Plants Over the Last 5 Years"),
     'export_chart_btn_id' => "exportsludgeCollectionByTreatmentPlantChart",
     'canvas_id' => "sludgeCollectionByTreatmentPlantChart"
 ])
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     var options = {
-       
+
         scales: {
             x: { stacked: true },
             y: { stacked: true },
@@ -45,16 +45,26 @@ document.addEventListener('DOMContentLoaded', function() {
               boxWidth: 10
           }
       },
-   
+
     scales: {
-      xAxes: [{
+            xAxes: [{
+                stacked: true, // Make sure X-axis is stacked
                 scaleLabel: {
-                    display: true, // Enable the scale label
-                    labelString: 'Year' // The label text
+                    display: true, 
+                    labelString: 'Year'
                 }
             }],
-        }
-    };
+            yAxes: [{
+                stacked: true, // Make sure Y-axis is stacked
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Sludge Volume (m³)' // FIXED: More descriptive label
+                },
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+	}};
     var ctx = document.getElementById('sludgeCollectionByTreatmentPlantChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',

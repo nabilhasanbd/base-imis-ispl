@@ -1,8 +1,9 @@
-@include('layouts.dashboard.chart-card',[
-    'card_title' => "Wardwise Distribution of Buildings",
+@include('layouts.dashboard.chart-card', [
+    'card_title' => __("Wardwise Distribution of Buildings"), // Removed extra quotes
     'export_chart_btn_id' => "exportbuildingsPerWardChart",
     'canvas_id' => "buildingsPerWardChart"
 ])
+
 @push('scripts')
 <script>
 var ctx = document.getElementById("buildingsPerWardChart");
@@ -30,26 +31,28 @@ var myChart = new Chart(ctx, {
           }
       },
     scales: {
-        xAxes: [{
-
-scaleLabel: {
-                display: true,
-                labelString: 'Wards'
-            },
-}],
-        yAxes: [{
-            ticks: {
-                beginAtZero: true,
-                userCallback: function(label, index, labels) {
-                     // when the floored value is the same as the value we have a whole number
-                     if (Math.floor(label) === label) {
-                         return label;
-                     }
-
-                 }
+    xAxes: [{
+        scaleLabel: {
+            display: true,
+            labelString: 'Wards'
+        },
+    }],
+    yAxes: [{
+        scaleLabel: {
+            display: true,
+            labelString: 'Count'
+        },
+        ticks: {
+            beginAtZero: true,
+            userCallback: function(label, index, labels) {
+                if (Math.floor(label) === label) {
+                    return label;
+                }
             }
-        }]
-    }
+        }
+    }]
+}
+
   }
 });
 document.getElementById('exportbuildingsPerWardChart').addEventListener("click", downloadIMG);

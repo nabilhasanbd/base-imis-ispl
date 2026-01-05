@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 16-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Wardwise Total Road Length (m)",
+    'card_title' => __("Wardwise Total Road Length (m)"),
     'export_chart_btn_id' => "exportroadLengthPerWardChart",
     'canvas_id' => "roadLengthPerWardChart"
 ])
@@ -39,7 +39,10 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)  (© ISPL, 2024) -->
                             labelString: 'Wards'
                         },
       }],
-                    yAxes: [{
+                    yAxes: [{scaleLabel: {
+                            display: true,
+                            labelString: 'Length(m)'
+                        },
                         ticks: {
                             beginAtZero: true,
                             userCallback: function(label, index, labels) {

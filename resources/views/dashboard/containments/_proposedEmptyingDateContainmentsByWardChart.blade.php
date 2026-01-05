@@ -1,7 +1,7 @@
 <!-- Last Modified Date: 18-04-2024
 Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Wardwise Distribution of Emptying Requests for the Next Four Weeks",
+    'card_title' => __("Wardwise Distribution of Emptying Requests for the Next Four Weeks"),
     'export_chart_btn_id' => "exportproposedEmptiedDateContainmentsByWardChart",
     'canvas_id' => "proposedEmptiedDateContainmentsByWardChart"
 ])
@@ -38,7 +38,10 @@ var myChart = new Chart(ctx, {
                 labelString: 'Wards',
         //fontSize: 10,
       },}],
-        yAxes: [{
+        yAxes: [{scaleLabel: {
+            display: true,
+            labelString: 'Count'
+        },
             ticks: {
                 beginAtZero: true,
                 userCallback: function(label, index, labels) {

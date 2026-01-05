@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Monthly Emptying Requests Processed by Service Providers",
+    'card_title' => __("Monthly Emptying Requests Processed by Service Providers"),
     'export_chart_btn_id' => "exportmonthlyAppRequestByoperators",
     'canvas_id' => "monthlyAppRequestByoperators"
 ])
@@ -33,13 +33,16 @@ var myChart = new Chart(ctx, {
       },
     scales: {
       xAxes: [{
-           
+
            scaleLabel: {
                    display: true, // Enable the scale label
                    labelString: 'Month' // The label text
                },
        }],
-        yAxes: [{
+        yAxes: [{scaleLabel: {
+            display: true,
+            labelString: 'Count'
+        },
             stacked: true,
             ticks: {
                 beginAtZero: true,
@@ -51,7 +54,7 @@ var myChart = new Chart(ctx, {
 
                  },
               }
-              
+
         }]
     },
     tooltips: {

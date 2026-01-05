@@ -1,5 +1,5 @@
 @include('layouts.dashboard.chart-card',[
-    'card_title' => "Containment Types Categorized by Land Use",
+    'card_title' => __("Containment Types Categorized by Land Use"),
     'export_chart_btn_id' => "exportcontainmentTypesByLanduseChart",
     'canvas_id' => "containmentTypesByLanduseChart"
 ])
@@ -47,6 +47,10 @@ var myChart = new Chart(ctx, {
         }],
         yAxes: [{
             stacked: true,
+			scaleLabel: {
+                    display: true, // Enable the scale label
+                    labelString: 'Count' // The label text
+                },
             ticks: {
                  beginAtZero: true,
                  userCallback: function(label, index, labels) {
