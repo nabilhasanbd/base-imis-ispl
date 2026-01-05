@@ -11,6 +11,7 @@ use App\Models\BuildingInfo\FunctionalUse;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Schema;
 use App\Models\BuildingInfo\Building;
 
 class DashboardService
@@ -1700,6 +1701,10 @@ class DashboardService
 
     public function treatmentPlantTestResultsByYear()
     {
+        if (!Schema::hasTable('treatment_plant_performance_efficiency_test_settings')) {
+            return [];
+        }
+
         $results = \DB::select("
     WITH standards AS (
     SELECT
