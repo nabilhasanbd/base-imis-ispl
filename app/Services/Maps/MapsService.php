@@ -83,55 +83,32 @@ class MapsService {
             ->get();
 
 
-<<<<<<< HEAD
-        $page_title = __("Map");
-        
-=======
         $page_title = "Map";
 
->>>>>>> nabil-dev
         // Fetching road hierarchy data
         $roadHierarchy = Roadline::whereNotNull('hierarchy')->groupBy('hierarchy')->pluck('hierarchy','hierarchy');
          // Fetching road surface types data
         $roadSurfaceTypes = Roadline::whereNotNull('surface_type')->groupBy('surface_type')->pluck('surface_type','surface_type');
-<<<<<<< HEAD
-        $road_code = Roadline::get(['code', 'name'])->mapWithKeys(function ($item) {
-            return [$item->code => ($item->name ? $item->code . ' - ' . $item->name : $item->code)];
-        })->toArray();
-        $bboxValues = DB::select("SELECT 
-            (ST_XMin(bbox) || ',' || ST_YMin(bbox) || ',' || ST_XMax(bbox) || ',' || ST_YMax(bbox)) AS bbox_values 
-=======
 
         $bboxValues = DB::select("SELECT
             (ST_XMin(bbox) || ',' || ST_YMin(bbox) || ',' || ST_XMax(bbox) || ',' || ST_YMax(bbox)) AS bbox_values
->>>>>>> nabil-dev
             FROM (
                 SELECT ST_Extent(geom) AS bbox FROM layer_info.citypolys
             ) AS extent_subquery
         ");
         $bboxstring = $bboxValues[0]->bbox_values;
         $cover_type = Drain::whereNotNull('cover_type')->groupBy('cover_type')->pluck('cover_type','cover_type');
-
-<<<<<<< HEAD
-        // $roadCode = Roadline::orderBy('code')->pluck('code', 'code');
-        $treatmentPlants = TreatmentPlant::Operational()->orderBy('id')->pluck('name', 'id');
         $surface_type = Drain::whereNotNull('surface_type')->groupBy('surface_type')->pluck('surface_type','surface_type');
 
-
-        $location = SewerLine::whereNotNull('location')->distinct('location')->pluck('location','location')->all();
-        
-        return view('maps.index', compact('page_title', 'wards', 'location','dueYears', 'maxDate','treatmentPlants', 
-        'minDate', 'bldguse', 'usecatg', 'pickWardResults', 'pickDateResults', 'pickStructureResults', 'cover_type','roadHierarchy', 'roadSurfaceTypes','surface_type',
-        'bboxstring','road_code'
-    ));
-=======
         $bboxstring = $bboxstring ? $bboxstring : '90.70,22.80,91.00,23.05'; // Coordinates for Lakshmipur, Bangladesh
+
+        $road_code = Roadline::orderBy('code')->pluck('code', 'code');
+        $treatmentPlants = TreatmentPlant::pluck('name', 'id');
 
         return view('maps.index', compact('page_title', 'wards', 'dueYears', 'maxDate',
             'minDate', 'bldguse', 'usecatg', 'pickWardResults', 'pickDateResults', 'pickStructureResults', 'roadHierarchy', 'roadSurfaceTypes',
-            'bboxstring'
+            'bboxstring', 'road_code', 'treatmentPlants', 'cover_type', 'surface_type'
         ));
->>>>>>> nabil-dev
     }
 
     /**

@@ -100,14 +100,74 @@ class RoadlineService {
      */
     public function storeOrUpdate($code = null,$data)
     {
-        if(empty($code)){
-            /*$roadlineTemp = DB::select("SELECT ST_AsText(geom) AS geom FROM roadline_temp");
-            $geom = ($roadlineTemp[0]->geom);*/
+        // Validation: Carrying Width <= Right of Way
+        if (isset($data['carrying_width']) && isset($data['right_of_way'])) {
+            if ($data['carrying_width'] > $data['right_of_way']) {
+                throw new \Exception(__('Carrying width cannot be greater than Right of Way.'));
+            }
+        }
 
-            $maxcode = Roadline::withTrashed()->max('code');
-            $maxcode = str_replace('R', '', $maxcode);
+        if(empty($code)){
+            $newCode = '';
+            
+            // 1. Municipality Road Logic
+            if (isset($data['road_type']) && $data['road_type'] === 'Municipality Road') {
+                $ward = isset($data['ward']) ? str_pad($data['ward'], 2, '0', STR_PAD_LEFT) : '00';
+                $prefix = '20512510' . $ward;
+                
+                // Find max code with this prefix
+                $maxCode = Roadline::withTrashed()
+                    ->where('code', 'LIKE', $prefix . '%')
+                    ->whereRaw('LENGTH(code) = ?', [strlen($prefix) + 3]) // Ensure we permit only 3 digit serials
+                    ->max('code');
+
+                if ($maxCode) {
+                    $serial = (int)substr($maxCode, strlen($prefix)) + 1;
+                } else {
+                    $serial = 1;
+                }
+                
+                $newCode = $prefix . str_pad($serial, 3, '0', STR_PAD_LEFT);
+            } 
+            // 2. Extension Logic
+            elseif (isset($data['use_extension']) && $data['use_extension'] == 1 && !empty($data['base_road_code'])) {
+                $baseCode = $data['base_road_code'];
+                 // Expected format: Base + 01, Base + 02... 
+                 // We need to find the max extension for this base code.
+                 // Assuming extensions are always 2 digits.
+                 
+                $maxExtensionCode = Roadline::withTrashed()
+                    ->where('code', 'LIKE', $baseCode . '__') // Match exactly base + 2 chars
+                    ->max('code');
+
+                 if ($maxExtensionCode) {
+                     $lastExtension = (int)substr($maxExtensionCode, strlen($baseCode));
+                     $newExtension = $lastExtension + 1;
+                 } else {
+                     $newExtension = 1;
+                 }
+                 
+                 $newCode = $baseCode . str_pad($newExtension, 2, '0', STR_PAD_LEFT);
+
+            }
+             // 3. Manual / Fallback Logic
+            else {
+                 if (!empty($data['manual_road_code'])) {
+                     $newCode = $data['manual_road_code'];
+                     if (Roadline::where('code', $newCode)->exists()) {
+                          throw new \Exception(__('Road code already exists.'));
+                     }
+                 } else {
+                     // Fallback to existing logic if simple Add from Index page (if any)
+                     // or ensure code is generated if missing
+                    $maxcode = Roadline::withTrashed()->where('code', 'LIKE', 'R%')->max('code');
+                    $maxcode = $maxcode ? (int)str_replace('R', '', $maxcode) : 0;
+                    $newCode = 'R' . sprintf('%06d', $maxcode + 1);
+                 }
+            }
+
             $roadline = new Roadline();
-            $roadline->code = 'R' . sprintf('%06d', $maxcode + 1);
+            $roadline->code = $newCode;
             $roadline->user_id = Auth::id();
             $roadline->name = $data['name'] ? $data['name'] : null;
             $roadline->hierarchy = $data['hierarchy'] ? $data['hierarchy'] : null;

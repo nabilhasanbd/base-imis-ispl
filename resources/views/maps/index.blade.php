@@ -204,30 +204,59 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                                         {!! Form::text('name',null,['class' => 'form-control', 'placeholder' => __('Road Name')]) !!}
                                     </div>
                                     
-                                      <div class="add-road-form-group pt-2">
+                                    <div class="add-road-form-group pt-2">
+                                        {!! Form::label('road_type',__('Road Type') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::select('road_type', ['Municipality Road' => 'Municipality Road', 'National Highway' => 'National Highway', 'Regional Highway' => 'Regional Highway', 'District Road' => 'Zilla Road'], 'Municipality Road', ['class' => 'form-control', 'id' => 'road_type', 'placeholder' => __('Road Type')]);!!}
+                                    </div>
+
+                                    <div class="add-road-form-group pt-2" id="ward_group">
+                                        {!! Form::label('ward',__('Ward') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::select('ward', array_combine(range(1, 15), range(1, 15)), null, ['class' => 'form-control', 'id' => 'ward', 'placeholder' => __('Select Ward')]);!!}
+                                    </div>
+
+                                    <div class="add-road-form-group pt-2" id="hierarchy_group">
                                         {!! Form::label('hierarchy',__('Hierarchy'),['class' => 'control-label'],false) !!}
-                                        {!! Form::select('hierarchy', $roadHierarchy, null, ['class' => 'form-control', 'placeholder' => __('Road Hierarchy')]);!!}
+                                        {!! Form::select('hierarchy', ['Primary' => 'Primary', 'Secondary' => 'Secondary', 'Tertiary' => 'Tertiary', 'Access' => 'Access'], null, ['class' => 'form-control', 'id' => 'hierarchy', 'placeholder' => __('Road Hierarchy')]);!!}
+                                    </div>
+
+                                    <!-- Road Code Logic -->
+                                    <div class="add-road-form-group pt-2" id="extension_group" style="display:none;">
+                                         <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="1" id="use_extension">
+                                            <label class="form-check-label" for="use_extension">
+                                                {{ __('Extension Mode') }}
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="add-road-form-group pt-2" id="base_code_group" style="display:none;">
+                                         {!! Form::label('base_road_code',__('Base Road Code') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        <select name="base_road_code" id="base_road_code" class="form-control select2" style="width: 100%;"></select>
+                                    </div>
+
+                                    <div class="add-road-form-group pt-2" id="manual_code_group" style="display:none;">
+                                        {!! Form::label('manual_road_code',__('Road Code'),['class' => 'control-label'],false) !!}
+                                        {!! Form::text('manual_road_code',null,['class' => 'form-control', 'id' => 'manual_road_code', 'placeholder' => __('Enter unique road code')]) !!}
                                     </div>
                                     
                                     <div class="add-road-form-group pt-2">
                                         {!! Form::label('right_of_way',__('Right of Way (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::number('right_of_way',null,['class' => 'form-control', 'placeholder' => __('Right of Way (m)'),'min' => 1]) !!}
+                                        {!! Form::number('right_of_way',null,['class' => 'form-control', 'id' => 'right_of_way', 'placeholder' => __('Right of Way (m)'),'min' => 0, 'step' => '0.01']) !!}
                                     </div>
                                    
                                     <div class="add-road-form-group pt-2">
                                         {!! Form::label('carrying_width',__('Carrying Width (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::number('carrying_width',null,['class' => 'form-control', 'placeholder' => __('Carrying Width (m)'),'min' => 1]) !!}
+                                        {!! Form::number('carrying_width',null,['class' => 'form-control', 'id' => 'carrying_width', 'placeholder' => __('Carrying Width (m)'),'min' => 0, 'step' => '0.01']) !!}
                                     </div>
                                     
-
                                     <div class="add-road-form-group pt-2">
-                                        {!! Form::label('surface_type',__('Surface Type'),['class' => 'control-label'],false) !!}
-                                        {!! Form::select('surface_type', $roadSurfaceTypes, null, ['class' => 'form-control', 'placeholder' => __('Road Surface Type')]);!!}
+                                        {!! Form::label('surface_type',__('Surface Type') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
+                                        {!! Form::select('surface_type', ['HBB' => 'HBB', 'Uni Block' => 'Uni Block', 'BC' => 'BC', 'CC' => 'CC', 'RCC' => 'RCC', 'WBM' => 'WBM', 'Earthen' => 'Earthen', 'Gravel' => 'Gravel', 'BFS' => 'BFS'], null, ['class' => 'form-control', 'id' => 'surface_type', 'placeholder' => __('Road Surface Type')]);!!}
                                     </div>
                                     
                                     <div class="add-road-form-group pt-2">
                                         {!! Form::label('length',__('Length (m)') .' <span style="color: red">*</span>',['class' => 'control-label'],false) !!}
-                                        {!! Form::number('length',null,['class' => 'form-control', 'placeholder' => __('Road Length (m)'),'min' => 1]) !!}
+                                        {!! Form::number('length',null,['class' => 'form-control', 'id' => 'length', 'placeholder' => __('Road Length (m)'),'min' => 0, 'step' => '0.01']) !!}
                                     </div>
                                    
                                     
@@ -3834,6 +3863,63 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                         .attr(currentLayerType);
                     $('#add_start_control').attr(currentLayerType);
 
+                     // Initialize Select2 for base road code
+                    $('#base_road_code').select2({
+                        placeholder: 'Search Base Road Code',
+                        minimumInputLength: 1,
+                        ajax: {
+                            url: '{{ route("roadlines.get-road-names") }}',
+                            dataType: 'json',
+                            delay: 250,
+                            processResults: function (data) {
+                                return {
+                                    results: data.results,
+                                     pagination: data.pagination
+                                };
+                            },
+                             cache: true
+                        }
+                    });
+
+                    // Road Type Logic
+                    $('#road_type').change(function() {
+                        const type = $(this).val();
+                        if (type === 'Municipality Road') {
+                            $('#ward_group').show();
+                            $('#hierarchy_group').show();
+                            $('#extension_group').hide();
+                            $('#base_code_group').hide();
+                            $('#manual_code_group').hide();
+                        } else {
+                            $('#ward_group').hide();
+                            $('#hierarchy_group').hide();
+                            $('#extension_group').show();
+                            $('#base_code_group').hide();
+                            $('#manual_code_group').show();
+                            
+                             if ($('#use_extension').is(':checked')) {
+                                $('#manual_code_group').hide();
+                                $('#base_code_group').show();
+                            }
+                        }
+                    });
+
+                    // Extension Logic
+                    $('#use_extension').change(function() {
+                        if ($(this).is(':checked')) {
+                            $('#manual_code_group').hide();
+                            $('#base_code_group').show();
+                        } else {
+                            if ($('#road_type').val() !== 'Municipality Road') {
+                                $('#manual_code_group').show();
+                            }
+                            $('#base_code_group').hide();
+                        }
+                    });
+
+                    // Trigger initial state
+                     $('#road_type').trigger('change');
+
                     handleMapControl(
                         '#add_road_control',
                         'add-roads-layer',          // Layer name
@@ -4273,17 +4359,36 @@ Developed By: Innovative Solution Pvt. Ltd. (ISPL)   -->
                     "name": "{{ __('Road Name') }}",
                     "length": "{{ __('Length (m)') }}",
                     "carrying_width": "{{ __('Carrying Width (m)') }}",
-                    "right_of_way": "{{ __('Right of Way (m)') }}"
+                    "right_of_way": "{{ __('Right of Way (m)') }}",
+                    "road_type": "{{ __('Road Type') }}",
+                    "ward": "{{ __('Ward') }}",
+                    "hierarchy": "{{ __('Hierarchy') }}",
+                    "base_road_code": "{{ __('Base Road Code') }}",
+                    "manual_road_code": "{{ __('Road Code') }}"
                 };
 
                 // Dynamically get the road form data
+                var row = $('#right_of_way').val();
+                var cw = $('#carrying_width').val();
+                
+                 if (parseFloat(cw) > parseFloat(row)) {
+                     Swal.fire("{{ __('Error') }}", "{{ __('Carrying Width cannot be greater than Right of Way') }}", 'error');
+                     removeAjaxLoader();
+                     return;
+                 }
+
                 formData = {
                     'name': $('#name').val(),
+                    'road_type': $('#road_type').val(),
+                    'ward': $('#ward').val(),
                     'hierarchy': $('#hierarchy').val(),
+                    'use_extension': $('#use_extension').is(':checked') ? 1 : 0,
+                    'base_road_code': $('#base_road_code').val(),
+                    'manual_road_code': $('#manual_road_code').val(),
                     'surface_type': $('#surface_type').val(),
                     'length': $('#length').val(),
-                    'carrying_width': $('#carrying_width').val(),
-                    'right_of_way': $('#right_of_way').val(),
+                    'carrying_width': cw,
+                    'right_of_way': row,
                     "geom": geom
                 };
 
